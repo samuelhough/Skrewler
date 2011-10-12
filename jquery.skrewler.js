@@ -305,10 +305,12 @@
                 if(defaults.direction === 'vertical'){
                     switch(event.which){
                         case defaults.keyCode_up:
-                            skrewler.scroll("up");
+                            skrewler.scroll("up");                          
+                            event.preventDefault();
                             break;
                         case defaults.keyCode_down:
-                            skrewler.scroll("down");
+                            skrewler.scroll("down");                       
+                            event.preventDefault();
                             break;
                     }   
                     event.preventDefault();
@@ -317,13 +319,14 @@
                 if(defaults.direction === 'horizontal'){
                     switch(event.which){
                         case defaults.keyCode_left:
-                            skrewler.scroll('left');
+                            skrewler.scroll('left'); 
+                            event.preventDefault();
                             break;
                         case defaults.keyCode_right:
-                            skrewler.scroll('right');
+                            skrewler.scroll('right');                         
+                            event.preventDefault();
                             break;
                     }                   
-                    event.preventDefault();
                 
                 }
             }
