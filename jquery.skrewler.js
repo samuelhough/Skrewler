@@ -59,15 +59,15 @@
        var error = {
            e: "Skrewler ERROR: ",
            noDirection: function(){
-               alert(this.e + "No direction was provided to the handler - $('#yourElement').skrewler({ direction: 'vertical' (or) 'horizontal' ");
+               console.log(this.e + "No direction was provided to the handler - $('#yourElement').skrewler({ direction: 'vertical' (or) 'horizontal' ");
            
            },
            leftUp: function(){
-               alert(this.e + "No id for leftUpButtonID && enableKeys === false   FIX:  $('#yourElement').skrewler({ leftUpButtonID: '#id'");
+               console.log(this.e + "No id for leftUpButtonID && enableKeys === false   FIX:  $('#yourElement').skrewler({ leftUpButtonID: '#id'");
            
            },
            rightDown: function(){
-               alert(this.e + "No id for rightDownButtonID && enableKeys === false  FIX:  $('#yourElement').skrewler({ rightDownButton: '#id'");           
+               console.log(this.e + "No id for rightDownButtonID && enableKeys === false  FIX:  $('#yourElement').skrewler({ rightDownButton: '#id'");           
            }
        };
        
@@ -92,7 +92,7 @@
             _this: null
        };
        defaults = $.extend(defaults, options);
-       defaults._this = $(this);
+       defaults._this = this;
        
         
        // Main object for skrewler functionality
