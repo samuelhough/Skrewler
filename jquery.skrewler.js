@@ -1,18 +1,18 @@
-/* 
+/*
  
  Skrewler - A Jquery plugin for scrolling floated, unordered list elements vertically and horizontally
  Alpha 1.0
  Created by Sam Hough with code inspiration from Chris Abrams
 
- Open Source - MIT Licesnse 
+ Open Source - MIT Licesnse
  October 2011
 
  To use - call skrewler on your unorganized list, say whether it should scroll vertically or horizontall, and give the ids for your left/right or up/down
  buttons
  EX: $('#scroller').skrewler({ direction: "horizontal", leftUpButtonID: '#left', rightDownButtonID: '#right'});
 
- Skrewler Options: 
-    REQUIRED: 
+ Skrewler Options:
+    REQUIRED:
         direction: "horizontal" || "vertical" - Direction skrewler will scroll your UL element
     
     REQUIRED (if enableKeys === false):
@@ -30,25 +30,26 @@
         postAnimFunc: function(){}   - Pass a function to be performed at the end of every scroll animation
         leaveBoundsFunc: function(){}- Pass a function to be performed when the user tries to go outside a boundary (left or right/up down side)
         scrollByPageSize: (boolean)  - Instead of scrolling by the average li elements width, scroll by the page width or height
- 
-// ----------------------------------------------------------------------------// 
+        include: (object)            - Object which specifies whether to include the border, margin, and padding in the calculations
+        
+// ----------------------------------------------------------------------------//
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files ( the "Software" ), to deal
 // in the Software without restriction, including without limitation the rights
 // to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 // copies of the Software, and to permit persons to whom the Software is
 // furnished to do so, subject to the following conditions:
-// 
+//
 // The above copyright notice and this permission notice shall be included in
 // all copies or substantial portions of the Software.
-// 
+//
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 // IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 // FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
 // AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-// THE SOFTWARE. 
+// THE SOFTWARE.
 // ----------------------------------------------------------------------------//      
 */
 
@@ -88,6 +89,11 @@
             postAnimFunc: function(){},
             leaveBoundsFunc:      function(){},
             scrollByPageSize: false,
+            include: {
+                border: true,
+                margin: true,
+                padding: true
+            },
             
             _this: null
        };
@@ -98,7 +104,7 @@
        // Main object for skrewler functionality
        var skrewler = {
            wHeight: 0,
-           wWidth: 0, 
+           wWidth: 0,
 
            element: {},                           // Element that is being manipulated
            position: 0,                           // Keeps track of the list's position and is multiplied by the scrollLength to set the xPos/yPos
@@ -109,6 +115,19 @@
                 this.wHeight = $(window).height();
                 this.wWidth  = $(window).width();
                 this.element = obj;
+                
+                
+                //Check to see if margin, padding, or border were not included when the user tried to change whether one was or not
+                if(!defaults.include.border){
+                    defaults.include.border = true;
+                }     
+                if(!defaults.include.margin){
+                    defaults.include.margin = true;
+                }     
+                if(!defaults.include.padding){
+                    defaults.include.padding = true;
+                }
+                
                 
                 //Initialization error checking
                 if(defaults.direction === ''){
@@ -121,6 +140,9 @@
                     error.rightDown();
                 }
                 
+           },
+           remPX: function(string){ // Remove 'px' from end of string and return value as an int
+                return parseInt(string.substring(0, string.length-2), 10);
            },
            scroll: function(direction){                // Called by event handlers and passed the direction the element should move
                if(defaults.reverse === true){          // Reverse scroll direction of skrewler if defaults.reverse === true
@@ -163,22 +185,30 @@
                 this.wWidth = $(window).width();                                                    // Width of Window
                 
                 var totalWidth = 0;
-                $(this.element).find("li").each(function(){                                         // Total size of all elements combined 
-                    totalWidth += $(this).outerWidth(true);
+                $(this.element).find("li").each(function(){                                         // Total size of all elements combined
+                    if(defaults.include.border){
+                        totalWidth += skrewler.remPX($(this).css('border-left-width')) +  skrewler.remPX($(this).css('border-right-width'));
+                    }
+                    if(defaults.include.margin){
+                        totalWidth += skrewler.remPX($(this).css('marginLeft')) +  skrewler.remPX($(this).css('marginRight'));                        
+                    }
+                    if(defaults.include.padding){
+                        totalWidth += skrewler.remPX($(this).css('paddingLeft')) +  skrewler.remPX($(this).css('paddingRight'));  
+                    }
                 });
                 
                 var elements      = $(this.element).find("li").length,                              // Get total # of elements in list                      
                     scrollLength  = parseInt(totalWidth / elements, 10);                            // Determine the length each scroll click should be
                 
-                if(defaults.scrollByPageSize){ 
-                    scrollLength = this.wWidth; 
+                if(defaults.scrollByPageSize){
+                    scrollLength = this.wWidth;
                  }
                 
                 if(((this.position - 1) * scrollLength) >=  (-totalWidth  + this.wWidth)){
                     this.position -= 1;
                     this.xPos      = this.position * scrollLength;
                 } else {
-                    if(this.atBoundary){ 
+                    if(this.atBoundary){
                         defaults.leaveBoundsFunc();
                     }
                     this.xPos      = (-totalWidth  + this.wWidth);
@@ -189,7 +219,7 @@
                     marginLeft: this.xPos
                 }, defaults.duration, function(){
                     defaults.postAnimFunc();
-                }); 
+                });
                 
            },
            scrollRight: function(){      // Scroll the element right
@@ -198,15 +228,25 @@
                 this.wWidth = $(window).width();                                                     // Width of Window
                 
                 var totalWidth = 0;
+                var substr = '';
                 $(this.element).find("li").each(function(){                                          // Total size of all elements combined with margin
-                    totalWidth += $(this).outerWidth(true);
+                    if(defaults.include.border){
+                        totalWidth += skrewler.remPX($(this).css('border-left-width')) +  skrewler.remPX($(this).css('border-right-width'));
+                    }
+                    if(defaults.include.margin){
+                        totalWidth += skrewler.remPX($(this).css('marginLeft')) +  skrewler.remPX($(this).css('marginRight'));                        
+                    }
+                    if(defaults.include.padding){
+                        totalWidth += skrewler.remPX($(this).css('paddingLeft')) +  skrewler.remPX($(this).css('paddingRight'));  
+                    }
                 });
                 
                 var elements      = $(this.element).find("li").length,                               // Get total # of elements in list                     
                     scrollLength  = parseInt(totalWidth / elements, 10);                             // Determine the length each scroll click should be
                 
-                if(defaults.scrollByPageSize){ 
-                    scrollLength = this.wWidth; 
+                console.log(scrollLength);
+                if(defaults.scrollByPageSize){
+                    scrollLength = this.wWidth;
                 }
             
                 if(((this.position + 1) * scrollLength) <=  0){
@@ -222,7 +262,7 @@
                     marginLeft: this.xPos
                 }, defaults.duration, function(){
                     defaults.postAnimFunc();
-                }); 
+                });
            
            },
            scrollUp: function(){      // Scroll the element up
@@ -230,15 +270,23 @@
                 this.wHeight = $(window).height();                                                  // Height of Window
                 
                 var totalHeight = 0;
-                $(this.element).find("li").each(function(){                                         // Total size of all elements combined 
-                    totalHeight += $(this).outerHeight(true);
+                $(this.element).find("li").each(function(){                                         // Total size of all elements combined
+                    if(defaults.include.border){
+                        totalHeight += skrewler.remPX($(this).css('border-top-width')) +  skrewler.remPX($(this).css('border-bottom-width'));
+                    }
+                    if(defaults.include.margin){
+                        totalHeight += skrewler.remPX($(this).css('marginTop')) +  skrewler.remPX($(this).css('marginBottom'));                        
+                    }
+                    if(defaults.include.padding){
+                        totalHeight += skrewler.remPX($(this).css('paddingTop')) +  skrewler.remPX($(this).css('paddingBottom'));  
+                    }             
                 });
                 
                 var elements      = $(this.element).find("li").length,                              // Get total # of elements inlistStylet
                     scrollLength  = parseInt(totalHeight / elements, 10);                           // Determine the length each scroll click should be
                 
-                if(defaults.scrollByPageSize){ 
-                    scrollLength = this.wHeight; 
+                if(defaults.scrollByPageSize){
+                    scrollLength = this.wHeight;
                 }
                  
                 if(((this.position + 1) *  scrollLength) <=  0){
@@ -262,15 +310,23 @@
                 
                 
                 var totalHeight = 0;
-                $(this.element).find("li").each(function(){                                         // Total size of all elements combined 
-                    totalHeight += $(this).outerHeight(true);
+                $(this.element).find("li").each(function(){                                         // Total size of all elements combined \
+                    if(defaults.include.border){
+                        totalHeight += skrewler.remPX($(this).css('border-top-width')) +  skrewler.remPX($(this).css('border-bottom-width'));
+                    }
+                    if(defaults.include.margin){
+                        totalHeight += skrewler.remPX($(this).css('marginTop')) +  skrewler.remPX($(this).css('marginBottom'));                        
+                    }
+                    if(defaults.include.padding){
+                        totalHeight += skrewler.remPX($(this).css('paddingTop')) +  skrewler.remPX($(this).css('paddingBottom'));  
+                    }
                 });
                 
                 var elements      = $(this.element).find("li").length,                              // Get total # of elements in list
                     scrollLength  = parseInt(totalHeight / elements, 10);                           // Determine the length each scroll click should be
                 
-                if(defaults.scrollByPageSize){ 
-                    scrollLength = this.wHeight; 
+                if(defaults.scrollByPageSize){
+                    scrollLength = this.wHeight;
                 }
                 
                 if(((this.position - 1) *  scrollLength) >=  (-totalHeight  + this.wHeight)){
@@ -313,7 +369,7 @@
             if(defaults.direction === 'horizontal'){
                  skrewler.scroll('right');
             } else {
-                 skrewler.scroll('down'); 
+                 skrewler.scroll('down');
             }
             return false;
         });
@@ -338,7 +394,7 @@
                 if(defaults.direction === 'horizontal'){
                     switch(event.which){
                         case defaults.keyCode_left:
-                            skrewler.scroll('left'); 
+                            skrewler.scroll('left');
                             event.preventDefault();
                             break;
                         case defaults.keyCode_right:
@@ -359,7 +415,7 @@
                 var elements  = $(skrewler.element).find("li").length,                               
                     totalHeight   = (elements * $(skrewler.element).find("li").outerHeight(true)),
                     scrollLength  = parseInt(totalHeight / elements, 10),
-                    resizePos     = skrewler.position * scrollLength; 
+                    resizePos     = skrewler.position * scrollLength;
                 
                 skrewler.yPos = resizePos;
                 
@@ -386,3 +442,4 @@
         return this;          // Send object back for chaining
     };
 })(jQuery);
+

@@ -1,0 +1,32 @@
+<html>
+<heda>
+<style>
+#scroller li {
+  width: 45px;
+  height: 40px;
+  margin-left: 20px;
+  margin-right: 20px;
+  background-color: red;
+  border: thick solid black;   
+  float: left;
+    
+}
+
+</style>
+</head>
+
+<ul id='scroller'>
+    <li>one </li>
+    <li>two </li>
+    <li>three </li>
+</ul>
+<br>
+
+<div id='left'> LEFT</div>
+<div id='right'> RIGHT </div>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
+<script type="text/javascript" src="jquery.skrewler.js"></script>
+<script type=text/javascript>
+    $('#scroller').skrewler({ leftUpButtonID: '#left', rightDownButtonID: '#right', direction: 'horizontal', reverse: true});
+</script>
+</html>
