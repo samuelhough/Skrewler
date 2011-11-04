@@ -12,14 +12,22 @@
     
 }
 
+#container {
+    width: 500px;
+    height: 100px;
+    border: thick red solid;
+}
 </style>
 </head>
 
-<ul id='scroller'>
-    <li>one </li>
-    <li>two </li>
-    <li>three </li>
-</ul>
+<div id='container'>
+    <ul id='scroller'>
+        <li>one </li>
+        <li>two </li>
+        <li>three </li>       
+    </ul>
+</div>
+
 <br>
 
 <div id='left'> LEFT</div>
@@ -27,6 +35,6 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
 <script type="text/javascript" src="jquery.skrewler.js"></script>
 <script type=text/javascript>
-    $('#scroller').skrewler({ leftUpButtonID: '#left', rightDownButtonID: '#right', direction: 'horizontal', reverse: true});
+    $('#scroller').skrewler({ leftUpButtonID: '#left', rightDownButtonID: '#right', direction: 'horizontal'});
 </script>
 </html>
