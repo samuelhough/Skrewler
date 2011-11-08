@@ -1,14 +1,19 @@
 <html>
 <heda>
-<style>
+<style type="text/css">
+#scroller {
+    width: 1000px;
+    height: 40px;
+    list-style-type: none;
+
+}
 #scroller li {
   width: 45px;
   height: 40px;
-  margin-left: 20px;
-  margin-right: 20px;
   background-color: red;
   border: thick solid black;   
   float: left;
+  
     
 }
 
@@ -16,6 +21,7 @@
     width: 500px;
     height: 100px;
     border: thick red solid;
+    overflow: hidden;
 }
 </style>
 </head>
@@ -23,6 +29,15 @@
 <div id='container'>
     <ul id='scroller'>
         <li>one </li>
+        <li>two </li>
+        <li>three </li> 
+        <li>one </li>
+        <li>two </li>
+        <li>three </li>         <li>one </li>
+        <li>two </li>
+        <li>three </li>         <li>one </li>
+        <li>two </li>
+        <li>three </li>         <li>one </li>
         <li>two </li>
         <li>three </li>       
     </ul>
@@ -35,6 +50,6 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
 <script type="text/javascript" src="jquery.skrewler.js"></script>
 <script type=text/javascript>
-    $('#scroller').skrewler({ leftUpButtonID: '#left', rightDownButtonID: '#right', direction: 'horizontal'});
+    $('#scroller').skrewler({ leftUpButtonID: '#left', rightDownButtonID: '#right', direction: 'horizontal', include: { border: true, margin: true, padding: true }});
 </script>
 </html>

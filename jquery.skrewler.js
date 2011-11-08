@@ -88,6 +88,11 @@
             postAnimFunc: function(){},
             leaveBoundsFunc:      function(){},
             scrollByPageSize: false,
+            include: {
+                margin: false,
+                padding: false,
+                border: false
+            },
             
             _this: null
        };
@@ -110,6 +115,18 @@
                 this.wWidth  = $(window).width();
                 this.element = obj;
                 
+                // Check if object has all three includes are there
+                if(!defaults.include.hasOwnProperty('margin')){
+                    defaults.include.margin = false;
+                }
+                if(!defaults.include.hasOwnProperty('border')){
+                    defaults.include.border = false;
+                }
+                if(!defaults.include.hasOwnProperty('padding')){
+                    defaults.include.padding = false;
+                }
+                
+                
                 //Initialization error checking
                 if(defaults.direction === ''){
                      error.noDirection();
@@ -125,7 +142,7 @@
            scroll: function(direction){                // Called by event handlers and passed the direction the element should move
                this.wWidth  =  $(this.element).parent().width();       // Width of Window
                this.wHeight =  $(this.element).parent().height();      // Height of Window
-                
+                console.log(this.wWidth);
                
                
                if(defaults.reverse === true){          // Reverse scroll direction of skrewler if defaults.reverse === true
@@ -163,12 +180,38 @@
                        break;
                }
            },
+           remPX: function(string){
+                string = ''+string+'';
+                if(string.charAt(string.length)== 'x'){
+                    return parseInt(string.substring(0,string.length-2),10);
+                } else {
+                    return parseInt(string,10);
+                }
+           },
            scrollLeft: function(){      // Scroll the element left
-                
+                console.log('entering scroll left');
                 var totalWidth = 0;
                 $(this.element).find("li").each(function(){                                         // Total size of all elements combined 
-                    totalWidth += $(this).outerWidth(true);
+                    var tmp = 0;
+                    if(defaults.include.border){
+
+                        tmp += skrewler.remPX($(this).css('borderLeftWidth'));
+                        tmp += skrewler.remPX($(this).css('borderRightWidth'));
+                    }
+                    if(defaults.include.margin){
+                        tmp += skrewler.remPX($(this).css('margin-left'));
+                        tmp += skrewler.remPX($(this).css('margin-right'));
+                    }
+                    if(defaults.include.padding){
+                        tmp += skrewler.remPX($(this).css('padding-left'));
+                        tmp += skrewler.remPX($(this).css('padding-right'));
+                    }
+                    console.log(tmp);
+                    totalWidth += tmp;
+                    totalWidth += skrewler.remPX($(this).width());
+                    
                 });
+                console.log('out of each');
                 
                 var elements      = $(this.element).find("li").length,                              // Get total # of elements in list                      
                     scrollLength  = parseInt(totalWidth / elements, 10);                            // Determine the length each scroll click should be
@@ -199,8 +242,24 @@
            scrollRight: function(){      // Scroll the element right
                
                 var totalWidth = 0;
-                $(this.element).find("li").each(function(){                                          // Total size of all elements combined with margin
-                    totalWidth += $(this).outerWidth(true);
+                $(this.element).find("li").each(function(){                                         // Total size of all elements combined 
+                    var tmp = 0;
+                    if(defaults.include.border){
+
+                        tmp += skrewler.remPX($(this).css('borderLeftWidth'));
+                        tmp += skrewler.remPX($(this).css('borderRightWidth'));
+                    }
+                    if(defaults.include.margin){
+                        tmp += skrewler.remPX($(this).css('margin-left'));
+                        tmp += skrewler.remPX($(this).css('margin-right'));
+                    }
+                    if(defaults.include.padding){
+                        tmp += skrewler.remPX($(this).css('padding-left'));
+                        tmp += skrewler.remPX($(this).css('padding-right'));
+                    }
+                    totalWidth += tmp;
+                    totalWidth += skrewler.remPX($(this).width());
+                    
                 });
                 
                 var elements      = $(this.element).find("li").length,                               // Get total # of elements in list                     
@@ -231,7 +290,22 @@
                 
                 var totalHeight = 0;
                 $(this.element).find("li").each(function(){                                         // Total size of all elements combined 
-                    totalHeight += $(this).outerHeight(true);
+                    var tmp = 0;
+                    if(defaults.include.border){
+
+                        tmp += skrewler.remPX($(this).css('borderTopWidth'));
+                        tmp += skrewler.remPX($(this).css('borderBottomWidth'));
+                    }
+                    if(defaults.include.margin){
+                        tmp += skrewler.remPX($(this).css('margin-top'));
+                        tmp += skrewler.remPX($(this).css('margin-bottom'));
+                    }
+                    if(defaults.include.padding){
+                        tmp += skrewler.remPX($(this).css('padding-top'));
+                        tmp += skrewler.remPX($(this).css('padding-bottom'));
+                    }
+                    totalHeight += skrewler.remPX($(this).height());
+                    
                 });
                 
                 var elements      = $(this.element).find("li").length,                              // Get total # of elements inlistStylet
@@ -259,7 +333,23 @@
            scrollDown: function(){      // Scroll the element down
                 var totalHeight = 0;
                 $(this.element).find("li").each(function(){                                         // Total size of all elements combined 
-                    totalHeight += $(this).outerHeight(true);
+                    var tmp = 0;
+                    if(defaults.include.border){
+
+                        tmp += skrewler.remPX($(this).css('borderTopWidth'));
+                        tmp += skrewler.remPX($(this).css('borderBottomWidth'));
+                    }
+                    if(defaults.include.margin){
+                        tmp += skrewler.remPX($(this).css('margin-top'));
+                        tmp += skrewler.remPX($(this).css('margin-bottom'));
+                    }
+                    if(defaults.include.padding){
+                        tmp += skrewler.remPX($(this).css('padding-top'));
+                        tmp += skrewler.remPX($(this).css('padding-bottom'));
+                    }
+                    totalHeight += tmp;
+                    totalHeight += skrewler.remPX($(this).height());
+                    
                 });
                 
                 var elements      = $(this.element).find("li").length,                              // Get total # of elements in list
