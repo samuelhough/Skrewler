@@ -25,17 +25,20 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
        
        // Error Reporting Object
        var error = {
-           e: "Skrewler ERROR: ",
+           e: "Skrewler ERROR: ", 
+           er: function(error){
+               console.error(this.e +" "+ error);
+           },
            noDirection: function(){
-               console.error(this.e + "No direction was provided to the handler - $('#yourElement').skrewler({ direction: 'vertical' (or) 'horizontal' ");
+               this.er("No direction was provided to the handler - $('#yourElement').skrewler({ direction: 'vertical' (or) 'horizontal' ");
            
            },
            leftUp: function(){
-               console.error(this.e + "No id for leftUpButtonID && enableKeys === false   FIX:  $('#yourElement').skrewler({ leftUpButtonID: '#id'");
+               this.er("No id for leftUpButtonID && enableKeys === false   FIX:  $('#yourElement').skrewler({ leftUpButtonID: '#id'");
            
            },
            rightDown: function(){
-               console.error(this.e + "No id for rightDownButtonID && enableKeys === false  FIX:  $('#yourElement').skrewler({ rightDownButton: '#id'");           
+               this.er("No id for rightDownButtonID && enableKeys === false  FIX:  $('#yourElement').skrewler({ rightDownButton: '#id'");           
            }
        };
        
